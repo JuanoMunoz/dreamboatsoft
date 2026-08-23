@@ -1,0 +1,146 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: light, dark;
+}
+
+@variant dark (&:where(.dark, .dark *));
+
+
+@font-face {
+  font-family: 'Dela Gothic One';
+  src: url('./assets/fonts/dela-gothic-one-0-400-normal.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Material Symbols Sharp';
+  src: url('./assets/fonts/material-symbols-sharp-latin-400-normal.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Material Symbols Sharp';
+  src: url('./assets/fonts/material-symbols-sharp-latin-600-normal.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  :root, :root[data-theme="light"], html.light {
+    --bg-main: #ffffff;
+    --text-main: #000000;
+    --text-muted: #1a1a1a;
+    --card-bg: #ffffff;
+    --card-border: #e5e7eb;
+    --header-bg: rgba(255, 255, 255, 0.96);
+    --header-border: #e5e7eb;
+    --table-header: #f3f4f6;
+    --input-bg: #ffffff;
+    --input-text: #000000;
+    --input-border: #d1d5db;
+  }
+
+  :root[data-theme="dark"], html.dark {
+    --bg-main: #111010;
+    --text-main: #fbfbfb;
+    --text-muted: #cbd5e1;
+    --card-bg: #191818;
+    --card-border: rgba(205, 50, 108, 0.25);
+    --header-bg: rgba(17, 16, 16, 0.92);
+    --header-border: rgba(205, 50, 108, 0.2);
+    --table-header: #111010;
+    --input-bg: #111010;
+    --input-text: #fbfbfb;
+    --input-border: #374151;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-dela, .font-display {
+    font-family: 'Dela Gothic One', sans-serif;
+  }
+
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    transition: background-color 0.25s ease, color 0.25s ease;
+    overflow-x: hidden;
+  }
+}
+
+.material-symbols-sharp {
+  font-family: 'Material Symbols Sharp', sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+}
+
+.theme-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 0.75rem;
+  transition: all 0.2s ease-in-out;
+}
+
+html.light .theme-card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+html.light .theme-card:hover {
+  border-color: #cd326c;
+  box-shadow: 0 8px 20px rgba(205, 50, 108, 0.12);
+}
+
+html.dark .theme-card:hover {
+  border-color: rgba(205, 50, 108, 0.6);
+  box-shadow: 0 8px 25px -5px rgba(205, 50, 108, 0.25);
+}
+
+.header-glass {
+  background-color: var(--header-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--header-border);
+}
+
+.table-header-bg {
+  background-color: var(--table-header);
+}
+
+.globe-spinner {
+  animation: spin 30s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.radar-wave {
+  animation: radarPulse 3s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+@keyframes radarPulse {
+  0% { transform: scale(0.2); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+input[type=range] {
+  accent-color: #cd326c;
+}
