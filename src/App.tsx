@@ -3,6 +3,7 @@ import { useI18n } from './i18n';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import emailjs from '@emailjs/browser';
+import logoImg from './assets/logo-dreamboatsoft.webp';
 import {
   Bot,
   Mail,
@@ -248,7 +249,7 @@ function App() {
           <div className="flex items-center gap-3">
             <a href="#" className="group flex items-center gap-2.5" aria-label="DreamboatSoft home">
               <img
-                src="/src/assets/logo-dreamboatsoft.webp"
+                src={logoImg}
                 alt="DreamboatSoft"
                 className="h-9 sm:h-10 w-auto object-contain group-hover:scale-105 transition-transform"
               />
