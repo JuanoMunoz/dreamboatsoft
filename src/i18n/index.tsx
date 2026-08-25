@@ -22,7 +22,8 @@ export const ThemeI18nProvider = ({ children }: { children: ReactNode }) => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('theme');
       if (saved === 'light' || saved === 'dark') return saved;
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      // Por defecto: modo claro (ignorar prefers-color-scheme del sistema)
+      return 'light';
     }
     return 'light';
   });
