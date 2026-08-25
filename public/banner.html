@@ -231,12 +231,94 @@
       fill: none; stroke: currentColor;
       stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
     }
+
+    /* Barra Superior con Boton de Descarga */
+    .toolbar-container {
+      position: sticky;
+      top: 20px;
+      z-index: 100;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: rgba(25, 24, 24, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(205, 50, 108, 0.35);
+      padding: 10px 24px;
+      border-radius: 100px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(205, 50, 108, 0.2);
+    }
+
+    .toolbar-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #fbfbfb;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .toolbar-badge {
+      background: rgba(205, 50, 108, 0.15);
+      border: 1px solid rgba(205, 50, 108, 0.4);
+      color: #cd326c;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(90deg, #d01926 0%, #cd326c 100%);
+      color: #fbfbfb;
+      padding: 10px 24px;
+      border-radius: 50px;
+      font-family: 'Dela Gothic One', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(208, 25, 38, 0.45);
+      transition: all 0.25s ease;
+    }
+
+    .download-btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 12px 30px rgba(205, 50, 108, 0.6);
+    }
+
+    .download-btn:active {
+      transform: translateY(0) scale(0.98);
+    }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
-  <p class="hint">LinkedIn Banner &mdash; 1584 &times; 396 px &bull; Abrir en browser, capturar a escala 1x</p>
+  <!-- BARRA SUPERIOR CON BOTON DE DESCARGA -->
+  <div class="toolbar-container">
+    <div class="toolbar-info">
+      <span class="toolbar-badge">1584 &times; 396 px</span>
+      <span>Banner Oficial LinkedIn</span>
+    </div>
 
-  <div class="banner">
+    <button class="download-btn" id="btn-download" onclick="downloadBannerImage()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      <span>Descargar como Imagen (PNG)</span>
+    </button>
+  </div>
+
+  <div class="banner" id="banner-target">
     <div class="grid-lines"></div>
     <div class="glow"></div>
     <div class="glow-left"></div>
@@ -292,5 +374,50 @@
       </div>
     </div>
   </div>
+
+  <!-- SCRIPT DE DESCARGA DIRECTA COMO IMAGEN HD -->
+  <script>
+    async function downloadBannerImage() {
+      const btn = document.getElementById('btn-download');
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = '<span>Generando PNG HD...</span>';
+      btn.style.opacity = '0.7';
+      btn.style.pointerEvents = 'none';
+
+      try {
+        const target = document.getElementById('banner-target');
+        
+        // Esperar a que las fuentes web esten listas
+        if (document.fonts) {
+          await document.fonts.ready;
+        }
+
+        // Renderizar a escala 2x (3168 x 792 px) centrado
+        const canvas = await html2canvas(target, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#111010',
+          logging: false
+        });
+
+        // Crear enlace y descargar automaticamente
+        const imageURL = canvas.toDataURL('image/png');
+        const downloadLink = document.createElement('a');
+        downloadLink.download = 'dreamboatsoft-banner-linkedin.png';
+        downloadLink.href = imageURL;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+      } catch (err) {
+        console.error('Error al generar el banner:', err);
+        alert('Hubo un problema al exportar. Tambien puedes tomar una captura de pantalla.');
+      } finally {
+        btn.innerHTML = originalHTML;
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+      }
+    }
+  </script>
 </body>
 </html>

@@ -1,0 +1,16 @@
+# Robots.txt - DreamboatSoft
+# https://dreamboatsoft.com
+
+User-agent: *
+Allow: /
+
+# Bloquear archivos de anuncios y material interno de marketing
+Disallow: /ad-promo.html
+Disallow: /banner.html
+
+# Bloquear activos estáticos que no aportan valor SEO
+Disallow: /assets/
+Disallow: /*.map$
+
+# Sitemap
+Sitemap: https://dreamboatsoft.com/sitemap.xml

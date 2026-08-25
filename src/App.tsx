@@ -59,6 +59,8 @@ function App() {
 
   const [employees, setEmployees] = useState(5);
   const [hoursPerDay, setHoursPerDay] = useState(2);
+  // Salario promedio del equipo (default = salario mínimo Colombia 2024)
+  const [avgSalary, setAvgSalary] = useState(1750000);
 
   const [formData, setFormData] = useState({
     user_name: '',
@@ -82,9 +84,21 @@ function App() {
   const sectionsRef = useRef<HTMLElement[]>([]);
   const calcResultRef = useRef<HTMLDivElement>(null);
 
-  const totalHoursMonth = employees * hoursPerDay * 20;
+  // Cálculo con condiciones reales del mercado laboral colombiano
+  // Costo real del empleado = salario × 1.52 (incluye prestaciones sociales:
+  //   vacaciones 4.17%, prima 8.33%, cesantías 8.33%, intereses 1%, ARL ~1.5%,
+  //   EPS 8.5%, pensión 12%, SENA 2%, ICBF 3%, Caja Compensación 4%)
+  const PRESTACIONES_FACTOR = 1.52;
+  const HORAS_MES = 192; // 8h × 24 días hábiles
+  const INVERSION_TIPO = 990000; // Inversión mensual referencia DreamboatSoft
+
+  const costoRealEmpleado = avgSalary * PRESTACIONES_FACTOR;
+  const tarifaHora = costoRealEmpleado / HORAS_MES;
+  const totalHoursMonth = employees * hoursPerDay * 22; // 22 días hábiles/mes
   const hoursSaved = Math.round(totalHoursMonth * 0.85);
-  const moneySavedCOP = hoursSaved * 28000;
+  const moneySavedCOP = Math.round(hoursSaved * tarifaHora);
+  const roiPercent = Math.round(((moneySavedCOP - INVERSION_TIPO) / INVERSION_TIPO) * 100);
+  const paybackMonths = moneySavedCOP > 0 ? (INVERSION_TIPO / moneySavedCOP).toFixed(1) : '—';
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -440,8 +454,11 @@ function App() {
               <p className="text-sm sm:text-base text-[#000000] dark:text-slate-300 font-medium">{t.calculator.subtitle}</p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              <div className="lg:col-span-7 theme-card p-6 sm:p-8 space-y-6 bg-white dark:bg-[#191818]">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              {/* Sliders Panel */}
+              <div className="lg:col-span-7 theme-card p-6 sm:p-8 space-y-7 bg-white dark:bg-[#191818]">
+
+                {/* Slider 1: Empleados */}
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <label className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#000000] dark:text-[#fbfbfb]">
@@ -457,8 +474,12 @@ function App() {
                     onChange={(e) => setEmployees(parseInt(e.target.value))}
                     className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg cursor-pointer accent-[#cd326c]"
                   />
+                  <div className="flex justify-between text-[10px] text-gray-400 mt-1">
+                    <span>1</span><span>50</span>
+                  </div>
                 </div>
 
+                {/* Slider 2: Horas manuales diarias */}
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <label className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#000000] dark:text-[#fbfbfb]">
@@ -474,22 +495,53 @@ function App() {
                     onChange={(e) => setHoursPerDay(parseInt(e.target.value))}
                     className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg cursor-pointer accent-[#cd326c]"
                   />
+                  <div className="flex justify-between text-[10px] text-gray-400 mt-1">
+                    <span>1h</span><span>8h (jornada completa)</span>
+                  </div>
                 </div>
 
+                {/* Slider 3: Salario promedio del equipo */}
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#000000] dark:text-[#fbfbfb]">
+                      Salario promedio del equipo
+                    </label>
+                    <span className="text-lg font-black font-dela text-[#cd326c]">
+                      ${avgSalary.toLocaleString('es-CO')}
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1750000"
+                    max="10000000"
+                    step="250000"
+                    value={avgSalary}
+                    onChange={(e) => setAvgSalary(parseInt(e.target.value))}
+                    className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg cursor-pointer accent-[#cd326c]"
+                  />
+                  <div className="flex justify-between text-[10px] text-gray-400 mt-1">
+                    <span>$1.750.000 (mín.)</span><span>$10.000.000</span>
+                  </div>
+                </div>
+
+                {/* Nota metodológica */}
                 <div className="p-4 rounded-lg bg-[#cd326c]/10 border border-[#cd326c]/30 text-[#000000] dark:text-rose-200 text-xs font-semibold leading-relaxed flex items-start gap-2.5">
                   <AlertCircle className="w-4 h-4 shrink-0 text-[#cd326c] mt-0.5" />
                   <span>
-                    El 80% de las tareas manuales (confirmación de pedidos por WhatsApp, emisión de facturas y control de inventarios) pueden automatizarse totalmente.
+                    El cálculo incluye el costo real del empleado con prestaciones sociales (prima, cesantías, pensión, EPS, ARL, SENA, ICBF y caja) que representan el <strong>52% adicional</strong> sobre el salario base — según la normativa laboral colombiana.
                   </span>
                 </div>
               </div>
 
-              <div ref={calcResultRef} className="lg:col-span-5 theme-card p-6 sm:p-8 border-2 border-[#cd326c] flex flex-col justify-between space-y-6 bg-white dark:bg-[#191818]">
+              {/* Results Panel */}
+              <div ref={calcResultRef} className="lg:col-span-5 theme-card p-6 sm:p-8 border-2 border-[#cd326c] flex flex-col justify-between space-y-5 bg-white dark:bg-[#191818]">
                 <div>
                   <span className="text-xs font-black uppercase tracking-widest text-[#cd326c]">
-                    Resultado Estimado
+                    Resultado Estimado · Colombia 🇨🇴
                   </span>
+
                   <div className="mt-4 space-y-4">
+                    {/* Horas recuperadas */}
                     <div>
                       <div className="text-xs text-[#000000] dark:text-slate-400 font-bold">{t.calculator.hoursSaved}</div>
                       <div className="text-4xl sm:text-5xl font-black font-dela text-[#000000] dark:text-[#fbfbfb]">
@@ -497,10 +549,32 @@ function App() {
                       </div>
                     </div>
 
+                    {/* Ahorro real con prestaciones */}
                     <div className="pt-3 border-t border-gray-200 dark:border-gray-800">
                       <div className="text-xs text-[#000000] dark:text-slate-400 font-bold">{t.calculator.moneySaved}</div>
                       <div className="text-2xl sm:text-3xl font-black font-dela text-[#d01926]">
-                        ${moneySavedCOP.toLocaleString('es-CO')} <span className="text-xs font-bold text-gray-500">COP</span>
+                        ${moneySavedCOP.toLocaleString('es-CO')} <span className="text-xs font-bold text-gray-500">COP/mes</span>
+                      </div>
+                      <div className="text-[10px] text-gray-400 mt-0.5 font-medium">
+                        Incluye prestaciones sociales (×1.52)
+                      </div>
+                    </div>
+
+                    {/* ROI % */}
+                    <div className="pt-3 border-t border-gray-200 dark:border-gray-800 grid grid-cols-2 gap-3">
+                      <div>
+                        <div className="text-xs text-[#000000] dark:text-slate-400 font-bold">ROI Mensual</div>
+                        <div className={`text-2xl font-black font-dela ${roiPercent >= 0 ? 'text-green-500' : 'text-amber-500'}`}>
+                          {roiPercent >= 0 ? '+' : ''}{roiPercent}%
+                        </div>
+                        <div className="text-[10px] text-gray-400 mt-0.5">sobre la inversión</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-[#000000] dark:text-slate-400 font-bold">Retorno en</div>
+                        <div className="text-2xl font-black font-dela text-[#cd326c]">
+                          {paybackMonths} <span className="text-base font-bold text-gray-500">mes{Number(paybackMonths) !== 1 ? 'es' : ''}</span>
+                        </div>
+                        <div className="text-[10px] text-gray-400 mt-0.5">de recuperación</div>
                       </div>
                     </div>
                   </div>
@@ -517,6 +591,7 @@ function App() {
             </div>
           </div>
         </section>
+
 
         <section
           id="servicios"

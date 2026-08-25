@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DreamboatSoft — Anuncio Promo Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- html2canvas para descarga directa en PNG de alta resolución -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #0d0d0d;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      padding: 40px 20px;
+    }
+
+    /* Barra Superior con Botón de Descarga Destacado */
+    .toolbar-container {
+      position: sticky;
+      top: 20px;
+      z-index: 100;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: rgba(25, 24, 24, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(205, 50, 108, 0.35);
+      padding: 12px 24px;
+      border-radius: 100px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(205, 50, 108, 0.2);
+    }
+
+    .toolbar-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #fbfbfb;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .toolbar-badge {
+      background: rgba(205, 50, 108, 0.15);
+      border: 1px solid rgba(205, 50, 108, 0.4);
+      color: #cd326c;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* BOTÓN CLARO DE DESCARGA */
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(90deg, #d01926 0%, #cd326c 100%);
+      color: #fbfbfb;
+      padding: 12px 28px;
+      border-radius: 50px;
+      font-family: 'Dela Gothic One', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(208, 25, 38, 0.45);
+      transition: all 0.25s ease;
+    }
+
+    .download-btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 12px 30px rgba(205, 50, 108, 0.6);
+    }
+
+    .download-btn:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* Contenedor del anuncio - 1080x1080 (Square 1:1 Feed) */
+    .ad-card {
+      width: 1080px;
+      height: 1080px;
+      background: #111010;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 70px 75px;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9), 0 0 50px rgba(205, 50, 108, 0.15);
+      border: 1px solid rgba(205, 50, 108, 0.25);
+    }
+
+    /* Textura de grano y cuadrícula oficial */
+    .grid-lines {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(205, 50, 108, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(205, 50, 108, 0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Glows oficiales */
+    .glow-top {
+      position: absolute;
+      top: -120px;
+      right: -100px;
+      width: 550px;
+      height: 550px;
+      background: radial-gradient(circle, rgba(205, 50, 108, 0.22) 0%, rgba(208, 25, 38, 0.1) 45%, transparent 70%);
+      border-radius: 50%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .glow-bottom {
+      position: absolute;
+      bottom: -150px;
+      left: -120px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(208, 25, 38, 0.16) 0%, rgba(205, 50, 108, 0.08) 50%, transparent 70%);
+      border-radius: 50%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Slashes diagonales de DreamboatSoft */
+    .slash {
+      position: absolute;
+      top: -100px;
+      right: 280px;
+      width: 8px;
+      height: 1300px;
+      background: linear-gradient(180deg, transparent 0%, #d01926 30%, #cd326c 70%, transparent 100%);
+      transform: rotate(-18deg);
+      opacity: 0.3;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .slash-2 {
+      right: 250px;
+      opacity: 0.12;
+      background: linear-gradient(180deg, transparent 0%, #cd326c 30%, #d01926 70%, transparent 100%);
+    }
+
+    /* Esquinas y barra de acento */
+    .corner-tl {
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 80px;
+      background: #cd326c;
+      z-index: 2;
+    }
+    .corner-tl::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 80px; height: 4px;
+      background: #cd326c;
+    }
+
+    .bottom-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #d01926 0%, #cd326c 50%, #d01926 100%);
+      z-index: 2;
+    }
+
+    /* Header del Anuncio */
+    .header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo {
+      width: 58px;
+      height: 58px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 16px rgba(205, 50, 108, 0.6));
+    }
+
+    .brand-text {
+      display: flex;
+      align-items: center;
+      line-height: 1;
+      font-family: 'Dela Gothic One', sans-serif;
+      font-size: 32px;
+      letter-spacing: -0.5px;
+    }
+    .brand-text .dreamboat { color: #fbfbfb; }
+    .brand-text .soft { color: #cd326c; }
+
+    /* Badge de Urgencia Neuromarketing (Con Icono SVG) */
+    .urgency-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(90deg, #d01926 0%, #cd326c 100%);
+      color: #fbfbfb;
+      padding: 10px 24px;
+      border-radius: 50px;
+      font-family: 'Dela Gothic One', sans-serif;
+      font-size: 15px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      box-shadow: 0 0 20px rgba(208, 25, 38, 0.4);
+    }
+
+    /* Contenido Principal */
+    .main-body {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .category-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      align-self: flex-start;
+      padding: 8px 18px;
+      border: 1px solid rgba(205, 50, 108, 0.4);
+      background: rgba(205, 50, 108, 0.1);
+      color: #cd326c;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-radius: 6px;
+    }
+
+    .headline {
+      font-family: 'Dela Gothic One', sans-serif;
+      font-size: 62px;
+      line-height: 1.1;
+      color: #fbfbfb;
+      letter-spacing: -1.5px;
+    }
+
+    /* Color sólido para evitar problemas de renderizado en canvas */
+    .headline-highlight {
+      color: #cd326c;
+    }
+
+    .subheadline {
+      font-size: 24px;
+      color: #cbd5e1;
+      font-weight: 600;
+      line-height: 1.45;
+      max-width: 900px;
+    }
+
+    .subheadline strong {
+      color: #fbfbfb;
+      font-weight: 800;
+    }
+
+    /* Pills de beneficios con Iconos SVG */
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .benefit-card {
+      background: rgba(25, 24, 24, 0.8);
+      border: 1px solid rgba(205, 50, 108, 0.25);
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .benefit-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .benefit-card .pill-title {
+      font-family: 'Dela Gothic One', sans-serif;
+      font-size: 16px;
+      color: #fbfbfb;
+    }
+
+    .benefit-card .pill-desc {
+      font-size: 13px;
+      color: #94a3b8;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    /* Footer del Anuncio con CTA */
+    .footer {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 20px;
+      border-top: 1px solid rgba(205, 50, 108, 0.2);
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      padding: 22px 50px;
+      background: linear-gradient(90deg, #d01926 0%, #cd326c 100%);
+      font-family: 'Dela Gothic One', sans-serif;
+      font-size: 22px;
+      color: #fbfbfb;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 10px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(208, 25, 38, 0.45);
+      cursor: pointer;
+    }
+
+    .cta-button::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+      transform: skewX(-20deg);
+      animation: shimmer 2.5s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      50% { left: 150%; }
+      100% { left: 150%; }
+    }
+
+    .trust-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .domain-tag {
+      font-family: 'Dela Gothic One', sans-serif;
+      font-size: 18px;
+      color: #fbfbfb;
+      letter-spacing: 0.02em;
+    }
+
+    .location-tag {
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(251, 251, 251, 0.4);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA SUPERIOR CON BOTÓN DE DESCARGA CLARO (SIN EMOJIS) -->
+  <div class="toolbar-container">
+    <div class="toolbar-info">
+      <span class="toolbar-badge">1080 &times; 1080 px</span>
+      <span>Feed Instagram / Facebook Ads</span>
+    </div>
+
+    <!-- BOTÓN DE DESCARGA PRINCIPAL -->
+    <button class="download-btn" id="btn-download" onclick="downloadAdImage()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      <span>Descargar como Imagen (PNG)</span>
+    </button>
+  </div>
+
+  <!-- TARJETA DEL ANUNCIO (1080x1080) -->
+  <div class="ad-card" id="ad-target">
+    <!-- Fondos oficiales de DreamboatSoft -->
+    <div class="grid-lines"></div>
+    <div class="glow-top"></div>
+    <div class="glow-bottom"></div>
+    <div class="slash"></div>
+    <div class="slash slash-2"></div>
+    <div class="corner-tl"></div>
+    <div class="bottom-bar"></div>
+
+    <!-- HEADER: Marca + Gatillo de Urgencia -->
+    <div class="header">
+      <div class="brand">
+        <!-- Logo Oficial DreamboatSoft (favicon.webp) -->
+        <img class="logo" src="favicon.webp" alt="DreamboatSoft">
+        <div class="brand-text">
+          <span class="dreamboat">Dreamboat</span><span class="soft">Soft</span>
+        </div>
+      </div>
+      <div class="urgency-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span>Oferta hasta el 10 de Sept</span>
+      </div>
+    </div>
+
+    <!-- CUERPO PRINCIPAL: Neuromarketing (Dolor -> Solución -> Deseo) -->
+    <div class="main-body">
+      <div class="category-tag">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+        <span>Digitalización y Ventas para PYMEs</span>
+      </div>
+
+      <h1 class="headline">
+        Creamos tu página web para que <br>
+        <span class="headline-highlight">vendas en automático 24/7.</span>
+      </h1>
+
+      <p class="subheadline">
+        Diseño ultrarrápido y optimizado para <strong>duplicar tus prospectos</strong> y liberar a tu equipo de tareas manuales repetitivas.
+      </p>
+
+      <!-- Grid de 3 Pilares de Confianza (Con Iconos SVG) -->
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <div class="benefit-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cd326c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+              <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+            </svg>
+            <span class="pill-title">Alta Conversión</span>
+          </div>
+          <div class="pill-desc">Diseñada para convertir visitas en clientes reales por WhatsApp.</div>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cd326c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span class="pill-title">+40h Ahorradas</span>
+          </div>
+          <div class="pill-desc">Automatización de consultas y cotizaciones en 1 clic.</div>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cd326c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span class="pill-title">Soporte VIP</span>
+          </div>
+          <div class="pill-desc">Acompañamiento directo y sin costos ocultos.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER: CTA de Alto Impacto y Autoridad -->
+    <div class="footer">
+      <a href="https://dreamboatsoft.com" class="cta-button">
+        <span>¡Quiero Mi Página Web!</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </a>
+
+      <div class="trust-group">
+        <div class="domain-tag">dreamboatsoft.com</div>
+        <div class="location-tag">Medellín, Colombia</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT DE DESCARGA CON MÁXIMA FIDELIDAD 1:1 -->
+  <script>
+    async function downloadAdImage() {
+      const btn = document.getElementById('btn-download');
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = '<span>Generando PNG HD...</span>';
+      btn.style.opacity = '0.7';
+      btn.style.pointerEvents = 'none';
+
+      try {
+        const target = document.getElementById('ad-target');
+        
+        // Esperar a que las fuentes web estén 100% cargadas
+        if (document.fonts) {
+          await document.fonts.ready;
+        }
+
+        // Renderizar a 2x de resolucion exacta y centrada
+        const canvas = await html2canvas(target, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#111010',
+          logging: false
+        });
+
+        // Crear enlace y descargar
+        const imageURL = canvas.toDataURL('image/png');
+        const downloadLink = document.createElement('a');
+        downloadLink.download = 'dreamboatsoft-anuncio-promo-web.png';
+        downloadLink.href = imageURL;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+      } catch (err) {
+        console.error('Error al generar la imagen:', err);
+        alert('Hubo un problema al exportar. También puedes tomar una captura de pantalla del anuncio.');
+      } finally {
+        btn.innerHTML = originalHTML;
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+      }
+    }
+  </script>
+
+</body>
+</html>
